@@ -16,10 +16,10 @@ jobs:
       uses: appleboy/scp-action@v0.1.3
       with:
         host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
+        username: root
         key: ${{ secrets.VPS_KEY }}
         source: "."
-        target: "/root/nestjs-posts-api"
+        target: "/root/opt/posts-api"
 
     - name: Run deploy commands on VPS
       uses: appleboy/ssh-action@v1.0.3
@@ -28,7 +28,7 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_KEY }}
         script: |
-          cd /root/nestjs-posts-api
+          cd /root/opt/posts-api
           
           # Matar el proceso que está usando el puerto 3000
           echo "Matar proceso en el puerto 3000..."
@@ -42,6 +42,6 @@ jobs:
           npm run build
           
           # Reiniciar PM2 con el nuevo código
-          pm2 stop nestjs-posts-api|| true  # Detener el proceso si está en ejecución
-          pm2 delete nestjs-posts-api|| true  # Eliminar el proceso si ya está activo
-          pm2 start dist/main.js --name nestjs-posts-api # Iniciar el proceso desde el archivo compilado
+          pm2 stop posts-api|| true  # Detener el proceso si está en ejecución
+          pm2 delete posts-api|| true  # Eliminar el proceso si ya está activo
+          pm2 start dist/main.js --name posts-api # Iniciar el proceso desde el archivo compilado
